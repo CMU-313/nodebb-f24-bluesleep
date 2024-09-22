@@ -4,6 +4,7 @@ npm-debug.log
 !node_modules/
 node_modules/**
 !node_modules/nodebb-plugin-composer-default/
+!node_modules/nodebb-plugin-composer-default/**
 sftp-config.json
 config.json
 jsconfig.json
