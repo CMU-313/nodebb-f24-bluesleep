@@ -201,6 +201,10 @@ module.exports = function (Posts) {
 			content: data.content,
 			editor: data.uid,
 		};
+		
+		if (data.hasOwnProperty('isAnswered')) {
+			editPostData.isAnswered = data.isAnswered;
+		}
 
 		if (data.hasOwnProperty('isAnswered')) {
 			editPostData.isAnswered = data.isAnswered;
