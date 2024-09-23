@@ -196,6 +196,10 @@ module.exports = function (Posts) {
 			content: data.content,
 			editor: data.uid,
 		};
+		
+		if (data.hasOwnProperty('isAnswered')) {
+			editPostData.isAnswered = data.isAnswered;
+		}
 
 		// For posts in scheduled topics, if edited before, use edit timestamp
 		editPostData.edited = topicData.scheduled ? (postData.edited || postData.timestamp) + 1 : Date.now();
