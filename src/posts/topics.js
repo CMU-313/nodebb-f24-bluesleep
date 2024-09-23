@@ -25,6 +25,11 @@ module.exports = function (Posts) {
 		return isArray ? result : result[0];
 	};
 
+	Posts.setPostAnsweredStatus = async function (pid, isAnswered) {
+		// Store the answered status for the post
+		await Posts.setPostField(pid, 'isAnswered', isAnswered);
+	};	
+
 	Posts.getTopicFields = async function (pid, fields) {
 		const tid = await Posts.getPostField(pid, 'tid');
 		return await topics.getTopicFields(tid, fields);
