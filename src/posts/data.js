@@ -22,10 +22,10 @@ module.exports = function (Posts) {
 			posts: postData,
 			fields: fields,
 		});
-		result.posts.forEach(post => {
+		result.posts.forEach((post) => {
 			modifyPost(post, fields);
-			if (post.anonymous ==1){
-				post.uid = null; 
+			if (post.anonymous === 1) {
+				post.uid = null;
 			}
 		});
 		return result.posts;
@@ -35,7 +35,7 @@ module.exports = function (Posts) {
 		const posts = await Posts.getPostsFields([pid], []);
 		if (posts && posts.length) {
 			const post = posts[0];
-			if (post.anonymous == 1) {
+			if (post.anonymous === 1) {
 				post.uid = null;
 			}
 			return post;
