@@ -38,6 +38,11 @@ module.exports = function (Posts) {
 		const oldContent = postData.content; // for diffing purposes
 		const editPostData = getEditPostData(data, topicData, postData);
 
+		// Logic to handle `isAnswered`
+		if (data.hasOwnProperty('isAnswered')) {
+			editPostData.isAnswered = data.isAnswered;
+		}
+
 		if (data.handle) {
 			editPostData.handle = data.handle;
 		}
@@ -196,6 +201,14 @@ module.exports = function (Posts) {
 			content: data.content,
 			editor: data.uid,
 		};
+
+		if (data.hasOwnProperty('isAnswered')) {
+			editPostData.isAnswered = data.isAnswered;
+		}
+
+		if (data.hasOwnProperty('isAnswered')) {
+			editPostData.isAnswered = data.isAnswered;
+		}
 
 		// For posts in scheduled topics, if edited before, use edit timestamp
 		editPostData.edited = topicData.scheduled ? (postData.edited || postData.timestamp) + 1 : Date.now();
