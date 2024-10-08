@@ -15,17 +15,17 @@ module.exports = function (Posts) {
 		if (!Array.isArray(pids) || !pids.length) {
 			return [];
 		}
-		const keys = pids.map(pid => `post:${pid}`);
+		const keys = pids.map((pid) => `post:${pid}`);
 		const postData = await db.getObjects(keys, fields);
 		const result = await plugins.hooks.fire('filter:post.getFields', {
 			pids: pids,
 			posts: postData,
 			fields: fields,
 		});
-		result.posts.forEach(post => {
+		result.posts.forEach((post) => {
 			modifyPost(post, fields);
-			if (post.anonymous ==1){
-				post.uid = null; 
+			if (post.anonymous === 1) {
+				post.uid = null;
 			}
 		});
 		return result.posts;
@@ -35,7 +35,7 @@ module.exports = function (Posts) {
 		const posts = await Posts.getPostsFields([pid], []);
 		if (posts && posts.length) {
 			const post = posts[0];
-			if (post.anonymous == 1) {
+			if (post.anonymous === 1) {
 				post.uid = null;
 			}
 			return post;
