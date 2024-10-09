@@ -32,11 +32,8 @@ module.exports = function (Posts) {
 		const posts = await Posts.getPostsFields([pid], []);
 		if (posts && posts.length) {
 			const post = posts[0];
-			// if (post.anonymous === 1) {
-			// 	post.uid = null;
-			// }
 			return post;
-	    }
+        }
 		return null;
 	};
 
