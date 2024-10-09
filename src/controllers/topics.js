@@ -22,6 +22,7 @@ const relative_path = nconf.get('relative_path');
 const upload_url = nconf.get('upload_url');
 const validSorts = ['oldest_to_newest', 'newest_to_oldest', 'most_votes'];
 
+// Assisted by Copilot
 topicsController.updateAnsweredStatus = async function (req, res) {
 	const { pid } = req.params; // Updated with destructuring // Post ID from URL params
 	const { isAnswered } = req.body; // Extract the 'isAnswered' value from the request body
