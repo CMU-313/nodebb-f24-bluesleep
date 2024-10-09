@@ -291,7 +291,24 @@ module.exports = function (utils, Benchpress, relative_path) {
 		 * rounded: true or false (optional, default false)
 		 * classNames: additional class names to prepend (optional, default none)
 		 * component: overrides the default component (optional, default none)
-		 */
+		 * isAnonymous: true or false, if true displays anonymous avatar, else uses userObj for avatar
+		 */ 
+
+		let isAnonymous = false;
+		if (anonymous === 'true') {
+			isAnonymous = true;
+		}
+		// Placeholder values for anonymous users
+		const anonymousUserObj = {
+			username: 'Anonymous',
+			'icon:bgColor': '#ccc', // default background color
+			'icon:text': '?',
+		};
+
+		// Use anonymous details if isAnonymous true
+		if (isAnonymous) {
+			userObj = anonymousUserObj;
+		}
 
 		// Try to use root context if passed-in userObj is undefined
 		if (!userObj) {

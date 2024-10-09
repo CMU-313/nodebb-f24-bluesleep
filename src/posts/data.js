@@ -25,7 +25,7 @@ module.exports = function (Posts) {
 		result.posts.forEach(post => {
 			modifyPost(post, fields);
 			if (post.anonymous ==1){
-				post.uid = null; 
+				post.uid = null; // added check if anonymous
 			}
 		});
 		return result.posts;
@@ -36,7 +36,7 @@ module.exports = function (Posts) {
 		if (posts && posts.length) {
 			const post = posts[0];
 			if (post.anonymous == 1) {
-				post.uid = null;
+				post.uid = null; // added check if anonymous
 			}
 			return post;
 		}
