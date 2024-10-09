@@ -85,7 +85,7 @@ module.exports = function (Posts) {
 	async function checkToPid(toPid, uid) {
 		const [toPost, canViewToPid] = await Promise.all([
 			Posts.getPostFields(toPid, ['pid', 'deleted']),
-			privileges.posts.can('posts:view_deleted', toPid, uid),
+			privileges.posts.can('posts:cview_deleted', toPid, uid),
 		]);
 		const toPidExists = !!toPost.pid;
 		if (!toPidExists || (toPost.deleted && !canViewToPid)) {
