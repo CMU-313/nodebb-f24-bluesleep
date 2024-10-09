@@ -33,7 +33,7 @@ module.exports = function (Posts) {
 		if (posts && posts.length) {
 			const post = posts[0];
 			return post;
-        }
+		}
 		return null;
 	};
 
