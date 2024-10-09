@@ -284,7 +284,6 @@ module.exports = function (utils, Benchpress, relative_path) {
 	}
 
 	function buildAvatar(userObj, size, rounded, classNames, component) {
-<<<<<<< HEAD
 		/**
 		 * userObj requires:
 		 *   - uid, picture, icon:bgColor, icon:text (getUserField w/ "picture" should return all 4), username
@@ -312,8 +311,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 		}
 
 		// Try to use root context if passed-in userObj is undefined
-=======
->>>>>>> d5f97e0a (lint fixes)
+
 		if (!userObj) {
 			userObj = this;
 		}
