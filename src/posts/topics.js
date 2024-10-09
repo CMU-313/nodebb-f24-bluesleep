@@ -10,7 +10,7 @@ module.exports = function (Posts) {
 		const pids = await Posts.getPidsFromSet(set, start, stop, reverse);
 		const posts = await Posts.getPostsByPids(pids, uid);
 		// Logic to retrieve the `isAnswered` field
-		posts.forEach(post => {
+		posts.forEach((post) => {
 			post.isAnswered = post.isAnswered || false; // Default to false if not set
 		});
 		return await user.blocks.filter(uid, posts);
@@ -28,7 +28,7 @@ module.exports = function (Posts) {
 	Posts.setPostAnsweredStatus = async function (pid, isAnswered) {
 		// Store the answered status for the post
 		await Posts.setPostField(pid, 'isAnswered', isAnswered);
-	};	
+	};
 
 	Posts.getTopicFields = async function (pid, fields) {
 		const tid = await Posts.getPostField(pid, 'tid');

@@ -3,7 +3,7 @@
 const express = require('express');
 
 const uploadsController = require('../controllers/uploads');
-const topicsController = require('../controllers/topics'); //topics controller added
+const topicsController = require('../controllers/topics'); // topics controller added
 const helpers = require('./helpers');
 
 module.exports = function (app, middleware, controllers) {
