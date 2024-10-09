@@ -23,6 +23,7 @@ module.exports = function (Posts) {
 			fields: fields,
 		});
 <<<<<<< HEAD
+<<<<<<< HEAD
 		result.posts.forEach((post) => {
 			modifyPost(post, fields);
 			if (post.anonymous === 1) {
@@ -32,11 +33,15 @@ module.exports = function (Posts) {
 =======
 		result.posts.forEach(post => modifyPost(post, fields));
 >>>>>>> parent of 1ba80bc2 (Merge pull request #26 from CMU-313/anonymous-feature)
+=======
+		result.posts.forEach(post => modifyPost(post, fields));
+>>>>>>> parent of 1ba80bc2 (Merge pull request #26 from CMU-313/anonymous-feature)
 		return result.posts;
 	};
 
 	Posts.getPostData = async function (pid) {
 		const posts = await Posts.getPostsFields([pid], []);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (posts && posts.length) {
 			const post = posts[0];
@@ -46,6 +51,9 @@ module.exports = function (Posts) {
 			return post;
 		}
 		return null;
+=======
+		return posts && posts.length ? posts[0] : null;
+>>>>>>> parent of 1ba80bc2 (Merge pull request #26 from CMU-313/anonymous-feature)
 =======
 		return posts && posts.length ? posts[0] : null;
 >>>>>>> parent of 1ba80bc2 (Merge pull request #26 from CMU-313/anonymous-feature)
