@@ -1,4 +1,5 @@
 //adding edits here - fix this file
+//also Copilot credits
 'use strict';
 
 const validator = require('validator');
@@ -36,10 +37,10 @@ module.exports = function (Posts) {
 
 		await scheduledTopicCheck(data, topicData);
 
-		const oldContent = postData.content; // for diffing purposes
+		const oldContent = postData.content; //for diffing purposes
 		const editPostData = getEditPostData(data, topicData, postData);
 
-		// Logic to handle `isAnswered`
+		//logic to handle `isAnswered`
 		if (data.hasOwnProperty('isAnswered')) {
 			editPostData.isAnswered = data.isAnswered;
 		}
@@ -77,7 +78,7 @@ module.exports = function (Posts) {
 		}
 		await Posts.uploads.sync(data.pid);
 
-		// Normalize data prior to constructing returnPostData (match types with getPostSummaryByPids)
+		//normalize data prior to constructing returnPostData (match types with getPostSummaryByPids)
 		postData.deleted = !!postData.deleted;
 
 		const returnPostData = { ...postData, ...result.post };
