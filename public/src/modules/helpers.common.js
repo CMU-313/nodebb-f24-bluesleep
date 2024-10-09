@@ -1,3 +1,4 @@
+// testing comment addition
 'use strict';
 
 module.exports = function (utils, Benchpress, relative_path) {
