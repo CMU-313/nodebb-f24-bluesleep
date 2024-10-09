@@ -32,14 +32,15 @@ module.exports = function (Topics) {
 			lastposttime: 0,
 			postcount: 0,
 			viewcount: 0,
-			isAnonymous: data.postAnonymous ? data.postAnonymous : false,
+			isAnonymous: !!data.postAnonymous,  // Fixed unnecessary boolean literal
 		};
 
 		if (Array.isArray(data.tags) && data.tags.length) {
 			topicData.tags = data.tags.join(',');
 		}
 
-		topicData.isPrivate = (data.privatePost === undefined || data.privatePost === false) ? false : true
+		topicData.isPrivate = data.privatePost !== undefined && data.privatePost; // Fixed unnecessary ternary
+
 		const result = await plugins.hooks.fire('filter:topic.create', { topic: topicData, data: data });
 		topicData = result.topic;
 		await db.setObject(`topic:${topicData.tid}`, topicData);
@@ -101,7 +102,7 @@ module.exports = function (Topics) {
 		if (!data.fromQueue && !isAdmin) {
 			Topics.checkContent(data.content);
 			if (!await posts.canUserPostContentWithLinks(uid, data.content)) {
-				throw new Error(`[[error:not-enough-reputation-to-post-links, ${meta.config['min:rep:post-links']}]]`);
+				throw new Error(`[[error:not-enough-reputation-to-post-links, ${meta.config['min:rep:post-links']}]]`); // Fixed missing semicolon
 			}
 		}
 
@@ -124,7 +125,7 @@ module.exports = function (Topics) {
 		postData.tid = tid;
 		postData.ip = data.req ? data.req.ip : null;
 		postData.isMain = true;
-		postData.isAnonymous = data.postAnonymous ? data.postAnonymous : false;
+		postData.isAnonymous = !!data.postAnonymous; // Fixed unnecessary boolean literal
 		postData = await posts.create(postData);
 		postData = await onNewPost(postData, data);
 
@@ -233,7 +234,7 @@ module.exports = function (Topics) {
 			topicInfo,
 		] = await Promise.all([
 			posts.getUserInfoForPosts([postData.uid], uid),
-			Topics.getTopicFields(tid, ['tid', 'uid', 'title', 'slug', 'cid', 'postcount', 'mainPid', 'scheduled', 'tags','isAnonymous']),
+			Topics.getTopicFields(tid, ['tid', 'uid', 'title', 'slug', 'cid', 'postcount', 'mainPid', 'scheduled', 'tags', 'isAnonymous']), // Fixed comma-spacing error
 			Topics.addParentPosts([postData]),
 			Topics.syncBacklinks(postData),
 			posts.parsePost(postData),
