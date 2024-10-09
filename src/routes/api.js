@@ -3,6 +3,7 @@
 const express = require('express');
 
 const uploadsController = require('../controllers/uploads');
+const topicsController = require('../controllers/topics'); //topics controller added
 const helpers = require('./helpers');
 
 module.exports = function (app, middleware, controllers) {
@@ -32,7 +33,7 @@ module.exports = function (app, middleware, controllers) {
 		middleware.uploads.ratelimit,
 		middleware.applyCSRF,
 	];
-
+	router.post('/post/:pid/answered', [...middlewares, middleware.ensureLoggedIn], helpers.tryRoute(topicsController.updateAnsweredStatus));
 	router.post('/post/upload', postMiddlewares, helpers.tryRoute(uploadsController.uploadPost));
 	router.post('/user/:userslug/uploadpicture', [
 		...middlewares,
