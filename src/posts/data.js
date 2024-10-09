@@ -24,9 +24,6 @@ module.exports = function (Posts) {
 		});
 		result.posts.forEach((post) => {
 			modifyPost(post, fields);
-			// if (post.anonymous === 1) {
-			// 	post.uid = null;
-			// }
 		});
 		return result.posts;
 	};
@@ -39,7 +36,7 @@ module.exports = function (Posts) {
 			// 	post.uid = null;
 			// }
 			return post;
-		}
+	    }
 		return null;
 	};
 
