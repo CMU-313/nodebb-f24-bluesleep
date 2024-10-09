@@ -63,18 +63,18 @@ module.exports = function (utils, Benchpress, relative_path) {
 	}
 
 	function buildMetaTag(tag) {
-		const name = tag.name ? 'name="' + tag.name + '" ' : '';
-		const property = tag.property ? 'property="' + tag.property + '" ' : '';
-		const content = tag.content ? 'content="' + tag.content.replace(/\n/g, ' ') + '" ' : '';
+		const name = tag.name ? `name="${tag.name}" ` : '';
+		const property = tag.property ? `property="${tag.property}" ` : '';
+		const content = tag.content ? `content="${tag.content.replace(/\n/g, ' ')}" ` : '';
 
-		return '<meta ' + name + property + content + '/>\n\t';
+		return `<meta ${name}${property}${content}/>\n\t`;
 	}
 
 	function buildLinkTag(tag) {
 		const attributes = ['link', 'rel', 'as', 'type', 'href', 'sizes', 'title', 'crossorigin'];
 		const [link, rel, as, type, href, sizes, title, crossorigin] = attributes.map(attr => (tag[attr] ? `${attr}="${tag[attr]}" ` : ''));
 
-		return '<link ' + link + rel + as + type + sizes + title + href + crossorigin + '/>\n\t';
+		return `<link ${link}${rel}${as}${type}${sizes}${title}${href}${crossorigin}/>\n\t`;
 	}
 
 	function stringify(obj) {
@@ -214,7 +214,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 	function renderTopicImage(topicObj) {
 		if (topicObj.thumb) {
 			return '<img src="' + topicObj.thumb + '" class="img-circle user-img" title="' + topicObj.user.username + '" />';
-		}
+			}
 		return '<img component="user/picture" data-uid="' + topicObj.user.uid + '" src="' + topicObj.user.picture + '" class="user-img" title="' + topicObj.user.username + '" />';
 	}
 
@@ -284,6 +284,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 	}
 
 	function buildAvatar(userObj, size, rounded, classNames, component) {
+<<<<<<< HEAD
 		/**
 		 * userObj requires:
 		 *   - uid, picture, icon:bgColor, icon:text (getUserField w/ "picture" should return all 4), username
@@ -311,6 +312,8 @@ module.exports = function (utils, Benchpress, relative_path) {
 		}
 
 		// Try to use root context if passed-in userObj is undefined
+=======
+>>>>>>> d5f97e0a (lint fixes)
 		if (!userObj) {
 			userObj = this;
 		}
