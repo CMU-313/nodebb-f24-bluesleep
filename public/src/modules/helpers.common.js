@@ -214,7 +214,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 	function renderTopicImage(topicObj) {
 		if (topicObj.thumb) {
 			return '<img src="' + topicObj.thumb + '" class="img-circle user-img" title="' + topicObj.user.username + '" />';
-			}
+		}
 		return '<img component="user/picture" data-uid="' + topicObj.user.uid + '" src="' + topicObj.user.picture + '" class="user-img" title="' + topicObj.user.username + '" />';
 	}
 
@@ -292,7 +292,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 		 * classNames: additional class names to prepend (optional, default none)
 		 * component: overrides the default component (optional, default none)
 		 * isAnonymous: true or false, if true displays anonymous avatar, else uses userObj for avatar
-		 */ 
+		 */
 
 		let isAnonymous = false;
 		// Fixed undefined variable 'anonymous'
