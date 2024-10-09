@@ -33,7 +33,7 @@ module.exports = function (app, middleware, controllers) {
 		middleware.uploads.ratelimit,
 		middleware.applyCSRF,
 	];
-	router.post('/post/:pid/answered', [...middlewares, middleware.ensureLoggedIn], helpers.tryRoute(topicsController.updateAnsweredStatus));
+	router.get('/post/:pid/answered', [...middlewares, middleware.ensureLoggedIn], helpers.tryRoute(topicsController.updateAnsweredStatus));
 	router.post('/post/upload', postMiddlewares, helpers.tryRoute(uploadsController.uploadPost));
 	router.post('/user/:userslug/uploadpicture', [
 		...middlewares,
