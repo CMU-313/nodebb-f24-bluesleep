@@ -1,4 +1,3 @@
-// testing comment addition
 'use strict';
 
 module.exports = function (utils, Benchpress, relative_path) {
@@ -296,7 +295,8 @@ module.exports = function (utils, Benchpress, relative_path) {
 		 */ 
 
 		let isAnonymous = false;
-		if (anonymous === 'true') {
+		// Fixed undefined variable 'anonymous'
+		if (userObj.isAnonymous) {
 			isAnonymous = true;
 		}
 		// Placeholder values for anonymous users
