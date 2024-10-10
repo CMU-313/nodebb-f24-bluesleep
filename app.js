@@ -17,9 +17,16 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// example
+
 'use strict';
 
+module.exports = require('./src/start').start;
+
+
 require('./require-main');
+
+
 
 const nconf = require('nconf');
 

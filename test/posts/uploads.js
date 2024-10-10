@@ -4,9 +4,11 @@ const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
+const request = require('supertest');
 
 const nconf = require('nconf');
 const crypto = require('crypto');
+const app = require('../../app');
 
 const db = require('../mocks/databasemock');
 
@@ -363,5 +365,56 @@ describe('post uploads management', () => {
 		const uploads = await posts.uploads.list(reply.pid);
 		assert.strictEqual(true, Array.isArray(uploads));
 		assert.strictEqual(0, uploads.length);
+	});
+
+	// tests created for checkbox frontend feature - copilot helped
+	describe('Chat Composer Component', () => {
+		let uid; let tid; let
+			cid;
+
+		before(async () => {
+			// Set up user, category, and topic for testing chat composer
+			uid = await user.create({
+				username: 'chatUser',
+				password: 'password123',
+				gdpr_consent: 1,
+			});
+
+			({ cid } = await categories.create({
+				name: 'Test Category',
+				description: 'A category for chat testing',
+			}));
+
+			const topicPostData = await topics.post({
+				uid,
+				cid,
+				title: 'Chat Composer Test Topic',
+				content: 'Initial content for testing',
+			});
+
+			tid = topicPostData.topicData.tid;
+		});
+
+		it('should render chat composer in a topic', async () => {
+			const response = await request(app)
+				.get(`/topic/${tid}`) // Adjust route based on your app
+				.expect(200);
+
+			assert(response.text.includes('component="chat/composer"'));
+		});
+
+		it('should allow user to send a message', async () => {
+			const response = await request(app)
+				.post(`/api/chat/send`) // Adjust with actual API endpoint
+				.send({
+					uid,
+					tid,
+					message: 'Hello from the chat composer!',
+				})
+				.expect(200);
+
+			assert(response.body.success, true);
+			assert(response.body.message, 'Hello from the chat composer!');
+		});
 	});
 });
