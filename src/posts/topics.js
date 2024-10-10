@@ -10,7 +10,7 @@ module.exports = function (Posts) {
 		const pids = await Posts.getPidsFromSet(set, start, stop, reverse);
 		const posts = await Posts.getPostsByPids(pids, uid);
 		// Logic to retrieve the `isAnswered` field
-		posts.forEach(post => {
+		posts.forEach((post) => {
 			post.isAnswered = post.isAnswered || false; // Default to false if not set
 		});
 		return await user.blocks.filter(uid, posts);
