@@ -1,7 +1,7 @@
 // adding edits here - fix this file
 // also Copilot credits
-'use strict';
 
+'use strict';
 
 const validator = require('validator');
 const _ = require('lodash');
