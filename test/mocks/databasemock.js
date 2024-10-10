@@ -1,8 +1,8 @@
 'use strict';
 
 /**
- * Database Mock - wrapper for database.js, makes the system use a separate test DB, instead of production.
- * ATTENTION: Testing DB is flushed before every use!
+ * Database Mock - wrapper for database.js, makes system use separate test db, instead of production
+ * ATTENTION: testing db is flushed before every use!
  */
 
 require('../../require-main');
@@ -10,13 +10,15 @@ require('../../require-main');
 const path = require('path');
 const nconf = require('nconf');
 const url = require('url');
-const winston = require('winston');
-const packageInfo = require('../../package.json');
+const util = require('util');
 
 process.env.NODE_ENV = process.env.TEST_ENV || 'production';
 global.env = process.env.NODE_ENV || 'production';
 
-// Setup Winston for logging
+
+const winston = require('winston');
+const packageInfo = require('../../package.json');
+
 winston.add(new winston.transports.Console({
 	format: winston.format.combine(
 		winston.format.splat(),
@@ -24,17 +26,16 @@ winston.add(new winston.transports.Console({
 	),
 }));
 
-// Load config.json
 try {
 	const fs = require('fs');
 	const configJSON = fs.readFileSync(path.join(__dirname, '../../config.json'), 'utf-8');
-	winston.info('Config loaded successfully');
+	winston.info('configJSON');
+	winston.info(configJSON);
 } catch (err) {
-	winston.error('Error loading config.json:', err.stack);
+	console.error(err.stack);
 	throw err;
 }
 
-// Load configuration using nconf
 nconf.file({ file: path.join(__dirname, '../../config.json') });
 nconf.defaults({
 	base_dir: path.join(__dirname, '../..'),
@@ -44,7 +45,6 @@ nconf.defaults({
 	relative_path: '',
 });
 
-// Parse URL and set up relative paths
 const urlObject = url.parse(nconf.get('url'));
 const relativePath = urlObject.pathname !== '/' ? urlObject.pathname : '';
 nconf.set('relative_path', relativePath);
@@ -55,9 +55,9 @@ nconf.set('url_parsed', urlObject);
 nconf.set('base_url', `${urlObject.protocol}//${urlObject.host}`);
 nconf.set('secure', urlObject.protocol === 'https:');
 nconf.set('use_port', !!urlObject.port);
-nconf.set('port', urlObject.port || nconf.get('port') || 4567);
+nconf.set('port', urlObject.port || nconf.get('port') || (nconf.get('PORT_ENV_VAR') ? nconf.get(nconf.get('PORT_ENV_VAR')) : false) || 4567);
 
-// Set socket.io origins and other cluster-related settings
+// cookies don't provide isolation by port: http://stackoverflow.com/a/16328399/122353
 const domain = nconf.get('cookieDomain') || urlObject.hostname;
 const origins = nconf.get('socket.io:origins') || `${urlObject.protocol}//${domain}:*`;
 nconf.set('socket.io:origins', origins);
@@ -68,39 +68,74 @@ if (nconf.get('isCluster') === undefined) {
 	nconf.set('singleHostCluster', false);
 }
 
-// Get database type and configuration
-const dbType = nconf.get('database.type');
+const dbType = nconf.get('database');
 const testDbConfig = nconf.get('test_database');
-const productionDbConfig = nconf.get('database');
+const productionDbConfig = nconf.get(dbType);
 
 if (!testDbConfig) {
-	winston.error('Test database configuration is missing in config.json');
-	throw new Error('Test database is not defined in config.json');
+	const errorText = 'test_database is not defined';
+	winston.info(
+		'\n===========================================================\n' +
+		'Please, add parameters for test database in config.json\n' +
+		'For example (redis):\n' +
+		'"test_database": {\n' +
+		'    "host": "127.0.0.1",\n' +
+		'    "port": "6379",\n' +
+		'    "password": "",\n' +
+		'    "database": "1"\n' +
+		'}\n' +
+		' or (mongo):\n' +
+		'"test_database": {\n' +
+		'    "host": "127.0.0.1",\n' +
+		'    "port": "27017",\n' +
+		'    "password": "",\n' +
+		'    "database": "1"\n' +
+		'}\n' +
+		' or (mongo) in a replicaset\n' +
+		'"test_database": {\n' +
+		'    "host": "127.0.0.1,127.0.0.1,127.0.0.1",\n' +
+		'    "port": "27017,27018,27019",\n' +
+		'    "username": "",\n' +
+		'    "password": "",\n' +
+		'    "database": "nodebb_test"\n' +
+		'}\n' +
+		' or (postgres):\n' +
+		'"test_database": {\n' +
+		'    "host": "127.0.0.1",\n' +
+		'    "port": "5432",\n' +
+		'    "username": "postgres",\n' +
+		'    "password": "",\n' +
+		'    "database": "nodebb_test"\n' +
+		'}\n' +
+		'==========================================================='
+	);
+	winston.error(errorText);
+	throw new Error(errorText);
 }
 
-// Check if test and production databases are the same (should not be)
 if (testDbConfig.database === productionDbConfig.database &&
 	testDbConfig.host === productionDbConfig.host &&
 	testDbConfig.port === productionDbConfig.port) {
-	winston.error('Test database configuration matches production configuration. They must differ.');
-	throw new Error('Test database has the same config as production database');
+	const errorText = 'test_database has the same config as production db';
+	winston.error(errorText);
+	throw new Error(errorText);
 }
 
-// Set the test database configuration
-nconf.set(`database.${dbType}`, testDbConfig);
-winston.info('Database config loaded for testing:', dbType);
-winston.info(`Environment: ${global.env}`);
+nconf.set(dbType, testDbConfig);
 
-// Load the database module
+winston.info('database config %s', dbType, testDbConfig);
+winston.info(`environment ${global.env}`);
+
 const db = require('../../src/database');
+
 module.exports = db;
 
-// Test setup and initialization
 before(async function () {
 	this.timeout(30000);
 
-	// Parse relative paths and other configurations
+	// Parse out the relative_url and other goodies from the configured URL
 	const urlObject = url.parse(nconf.get('url'));
+
 	nconf.set('core_templates_path', path.join(__dirname, '../../src/views'));
 	nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-persona/templates'));
 	nconf.set('theme_config', path.join(nconf.get('themes_path'), 'nodebb-theme-persona', 'theme.json'));
@@ -110,49 +145,46 @@ before(async function () {
 	nconf.set('runJobs', false);
 	nconf.set('jobsDisabled', false);
 
-	// Initialize database
+
 	await db.init();
-	if (db.createIndices) {
+	if (db.hasOwnProperty('createIndices')) {
 		await db.createIndices();
 	}
 	await setupMockDefaults();
 	await db.initSessionStore();
 
-	// Load metadata and initialize themes
 	const meta = require('../../src/meta');
 	nconf.set('theme_templates_path', meta.config['theme:templates'] ? path.join(nconf.get('themes_path'), meta.config['theme:id'], meta.config['theme:templates']) : nconf.get('base_templates_path'));
-
+	// nconf defaults, if not set in config
 	if (!nconf.get('sessionKey')) {
 		nconf.set('sessionKey', 'express.sid');
 	}
 
 	await meta.dependencies.check();
 
-	// Initialize webserver and sockets
 	const webserver = require('../../src/webserver');
 	const sockets = require('../../src/socket.io');
 	await sockets.init(webserver.server);
 
-	// Start background jobs
 	require('../../src/notifications').startJobs();
 	require('../../src/user').startJobs();
 
 	await webserver.listen();
 
-	// Reset defaults after each suite
+	// Iterate over all of the test suites/contexts
 	this.test.parent.suites.forEach((suite) => {
+		// Attach an afterAll listener that resets the defaults
 		suite.afterAll(async () => {
 			await setupMockDefaults();
 		});
 	});
 });
 
-// Function to reset the database and mock defaults
 async function setupMockDefaults() {
 	const meta = require('../../src/meta');
 	await db.emptydb();
 
-	winston.info('Test database flushed');
+	winston.info('test_database flushed');
 	await setupDefaultConfigs(meta);
 
 	await meta.configs.init();
@@ -165,8 +197,7 @@ async function setupMockDefaults() {
 	require('../../src/posts/cache').getOrCreate().reset();
 	require('../../src/cache').reset();
 	require('../../src/middleware/uploads').clearCache();
-
-	// Reset privileges and enable default plugins
+	// privileges must be given after cache reset
 	await giveDefaultGlobalPrivileges();
 	await enableDefaultPlugins();
 
@@ -175,11 +206,12 @@ async function setupMockDefaults() {
 		id: 'nodebb-theme-persona',
 	});
 
-	// Setup test upload directories
 	const fs = require('fs');
 	await fs.promises.rm('test/uploads', { recursive: true, force: true });
 
+
 	const { mkdirp } = require('mkdirp');
+
 	const folders = [
 		'test/uploads',
 		'test/uploads/category',
@@ -188,22 +220,23 @@ async function setupMockDefaults() {
 		'test/uploads/profile',
 	];
 	for (const folder of folders) {
-		await mkdirp(folder); // Create necessary test directories
+		/* eslint-disable no-await-in-loop */
+		await mkdirp(folder);
 	}
 }
+db.setupMockDefaults = setupMockDefaults;
 
-// Function to setup default configurations
 async function setupDefaultConfigs(meta) {
-	winston.info('Populating database with default configs, if not already set...');
+	winston.info('Populating database with default configs, if not already set...\n');
+
 	const defaults = require(path.join(nconf.get('base_dir'), 'install/data/defaults.json'));
 	defaults.eventLoopCheckEnabled = 0;
 	defaults.minimumPasswordStrength = 0;
 	await meta.configs.setOnEmpty(defaults);
 }
 
-// Function to give global privileges
 async function giveDefaultGlobalPrivileges() {
-	winston.info('Giving default global privileges...');
+	winston.info('Giving default global privileges...\n');
 	const privileges = require('../../src/privileges');
 	await privileges.global.give([
 		'groups:chat', 'groups:upload:post:image', 'groups:signature', 'groups:search:content',
@@ -215,9 +248,8 @@ async function giveDefaultGlobalPrivileges() {
 	], 'guests');
 }
 
-// Function to enable default plugins
 async function enableDefaultPlugins() {
-	winston.info('Enabling default plugins...');
+	winston.info('Enabling default plugins\n');
 	const testPlugins = Array.isArray(nconf.get('test_plugins')) ? nconf.get('test_plugins') : [];
 	const defaultEnabled = [
 		'nodebb-plugin-dbsearch',
@@ -225,6 +257,7 @@ async function enableDefaultPlugins() {
 		'nodebb-plugin-composer-default',
 	].concat(testPlugins);
 
-	winston.info('Activating default plugins:', defaultEnabled);
-	await db.sortedSetAdd('plugins:active', defaultEnabled);
+	winston.info('[install/enableDefaultPlugins] activating default plugins', defaultEnabled);
+
+	await db.sortedSetAdd('plugins:active', Object.keys(defaultEnabled), defaultEnabled);
 }
