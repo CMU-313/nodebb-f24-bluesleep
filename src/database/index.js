@@ -2,7 +2,7 @@
 
 const nconf = require('nconf');
 
-const databaseName = nconf.get('database');
+const databaseName = nconf.get('database.type');  // Fix: get the database type
 const winston = require('winston');
 
 if (!databaseName) {
@@ -21,7 +21,7 @@ primaryDB.parseIntFields = function (data, intFields, requestedFields) {
 };
 
 primaryDB.initSessionStore = async function () {
-	const sessionStoreConfig = nconf.get('session_store') || nconf.get('redis') || nconf.get(databaseName);
+	const sessionStoreConfig = nconf.get('session_store') || nconf.get('redis') || nconf.get(`database.${databaseName}`);
 	let sessionStoreDB = primaryDB;
 
 	if (nconf.get('session_store')) {
