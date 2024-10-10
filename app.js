@@ -18,8 +18,8 @@
 */
 
 // example
-'use strict';
 
+'use strict';
 
 require('./require-main');
 
