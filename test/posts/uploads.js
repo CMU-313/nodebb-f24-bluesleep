@@ -366,9 +366,10 @@ describe('post uploads management', () => {
 	});
 
 	// tests created for checkbox frontend feature - copilot helped
-	describe('Chat Composer Component', function () {
-		let uid, tid, cid;
-	
+	describe('Chat Composer Component', () => {
+		let uid; let tid; let
+			cid;
+
 		before(async () => {
 			// Set up user, category, and topic for testing chat composer
 			uid = await user.create({
@@ -376,43 +377,42 @@ describe('post uploads management', () => {
 				password: 'password123',
 				gdpr_consent: 1,
 			});
-	
+
 			({ cid } = await categories.create({
 				name: 'Test Category',
 				description: 'A category for chat testing',
 			}));
-	
+
 			const topicPostData = await topics.post({
 				uid,
 				cid,
 				title: 'Chat Composer Test Topic',
 				content: 'Initial content for testing',
 			});
-	
+
 			tid = topicPostData.topicData.tid;
 		});
-	
+
 		it('should render chat composer in a topic', async () => {
 			const response = await request(app)
-				.get(`/topic/${tid}`)  // Adjust route based on your app
+				.get(`/topic/${tid}`) // Adjust route based on your app
 				.expect(200);
-			
+
 			assert(response.text.includes('component="chat/composer"'));
 		});
-	
+
 		it('should allow user to send a message', async () => {
 			const response = await request(app)
-				.post(`/api/chat/send`)  // Adjust with actual API endpoint
+				.post(`/api/chat/send`) // Adjust with actual API endpoint
 				.send({
 					uid,
 					tid,
 					message: 'Hello from the chat composer!',
 				})
 				.expect(200);
-			
+
 			assert(response.body.success, true);
 			assert(response.body.message, 'Hello from the chat composer!');
 		});
 	});
-	
 });
