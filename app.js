@@ -17,8 +17,9 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-//example
+// example
 'use strict';
+
 
 require('./require-main');
 
