@@ -21,7 +21,12 @@
 
 'use strict';
 
+module.exports = require('./src/start').start;
+
+
 require('./require-main');
+
+
 
 const nconf = require('nconf');
 

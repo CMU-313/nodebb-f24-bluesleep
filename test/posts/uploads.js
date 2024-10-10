@@ -4,9 +4,11 @@ const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
+const request = require('supertest');
 
 const nconf = require('nconf');
 const crypto = require('crypto');
+const app = require('../../app');
 
 const db = require('../mocks/databasemock');
 
