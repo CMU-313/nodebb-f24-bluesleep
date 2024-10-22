@@ -153,5 +153,3 @@ The Emoji Reactions feature lets users express their sentiments on posts by reac
 - The tests include basic functionality, user interaction scenarios, and edge cases, ensuring the robustness of the features. We believe the tests are sufficient as they verify key user interactions, API calls, and data persistence across sessions.
 
 ---
-
-This document should cover all the necessary aspects of your user guide and testing information in a clear and structured manner. Let me know if you need further adjustments!
