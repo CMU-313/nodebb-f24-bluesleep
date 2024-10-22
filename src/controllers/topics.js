@@ -22,6 +22,22 @@ const relative_path = nconf.get('relative_path');
 const upload_url = nconf.get('upload_url');
 const validSorts = ['oldest_to_newest', 'newest_to_oldest', 'most_votes'];
 
+// Assisted by Copilot
+topicsController.updateAnsweredStatus = async function (req, res) {
+	const { pid } = req.params; // Updated with destructuring // Post ID from URL params
+	const { isAnswered } = req.body; // Extract the 'isAnswered' value from the request body
+	if (!req.loggedIn) {
+		return res.status(403).json({ error: 'User not logged in.' });
+	}
+	try {
+		await topics.setPostAnsweredStatus(pid, isAnswered);
+		res.status(200).json({ message: 'Post answered status updated successfully.' });
+	} catch (error) { // Corrected brace-style
+		console.error(`Failed to update answered status: ${error.message}`);
+		res.status(500).json({ error: 'Failed to update answered status.' });
+	}
+};
+
 topicsController.get = async function getTopic(req, res, next) {
 	const tid = req.params.topic_id;
 	if (

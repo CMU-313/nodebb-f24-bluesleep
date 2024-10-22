@@ -1,4 +1,4 @@
-
+// Assisted by Copilot
 'use strict';
 
 const topics = require('../topics');
@@ -9,6 +9,10 @@ module.exports = function (Posts) {
 	Posts.getPostsFromSet = async function (set, start, stop, uid, reverse) {
 		const pids = await Posts.getPidsFromSet(set, start, stop, reverse);
 		const posts = await Posts.getPostsByPids(pids, uid);
+		// Logic to retrieve the `isAnswered` field
+		posts.forEach((post) => {
+			post.isAnswered = post.isAnswered || false; // Default to false if not set
+		});
 		return await user.blocks.filter(uid, posts);
 	};
 
@@ -19,6 +23,11 @@ module.exports = function (Posts) {
 		const topicData = await topics.getTopicsFields(postData.map(t => t.tid), ['mainPid']);
 		const result = pids.map((pid, i) => parseInt(pid, 10) === parseInt(topicData[i].mainPid, 10));
 		return isArray ? result : result[0];
+	};
+
+	Posts.setPostAnsweredStatus = async function (pid, isAnswered) {
+		// Store the answered status for the post
+		await Posts.setPostField(pid, 'isAnswered', isAnswered);
 	};
 
 	Posts.getTopicFields = async function (pid, fields) {

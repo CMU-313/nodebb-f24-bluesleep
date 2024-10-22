@@ -2506,6 +2506,45 @@ describe('Topic\'s', () => {
 	});
 });
 
+describe('isAnswered', () => {
+	let testTopic;
+	let replyPid;
+	let fooUid;
+
+	before(async () => {
+		fooUid = await User.create({ username: 'foo_test_user', password: '123456' });
+
+		const testCategory = await categories.create({
+			name: 'Answered Test Category',
+			description: 'Category for testing the isAnswered feature',
+		});
+
+		const topicResponse = await topics.post({
+			uid: fooUid,
+			title: 'Test Topic for isAnswered',
+			content: 'Initial content of the test topic',
+			cid: testCategory.cid,
+		});
+		testTopic = topicResponse.topicData;
+		it('should default to isAnswered as false for a new topic', async () => {
+			const topicData = await topics.getTopicData(testTopic.tid);
+			assert.strictEqual(topicData.isAnswered, false, 'New topics should have isAnswered set to false by default');
+		});
+	
+		it('should correctly set isAnswered to true when a post is marked as an answer', async () => {
+			await topics.setIsAnswered(testTopic.tid, replyPid, true);
+			const topicData = await topics.getTopicData(testTopic.tid);
+			assert.strictEqual(topicData.isAnswered, true, 'isAnswered should be set to true when an answer is marked');
+		});
+	
+		it('should correctly set isAnswered back to false when the answer is unmarked', async () => {
+			await topics.setIsAnswered(testTopic.tid, replyPid, false);
+			const topicData = await topics.getTopicData(testTopic.tid);
+			assert.strictEqual(topicData.isAnswered, false, 'isAnswered should be set to false when the answer is unmarked');
+		});
+	});
+});
+
 describe('Topics\'', async () => {
 	let files;
 
