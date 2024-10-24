@@ -292,7 +292,7 @@ module.exports = function (utils, Benchpress, relative_path) {
 		 * classNames: additional class names to prepend (optional, default none)
 		 * component: overrides the default component (optional, default none)
 		 * isAnonymous: true or false, if true displays anonymous avatar, else uses userObj for avatar
-		 */ 
+		 */
 
 		let isAnonymous = false;
 		if (anonymous === 'true') {
