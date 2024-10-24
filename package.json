@@ -1,5 +1,8 @@
 {
   "dependencies": {
     "iroh": "^0.3.0"
+  },
+  "scripts": {
+    "analyze:iroh": "node ./node_modules/iroh/dist/iroh-node.js analyze --config ./iroh.config.json --verbose"
   }
 }
