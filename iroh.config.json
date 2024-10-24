@@ -1,0 +1,21 @@
+{
+    "entry": "./loader.js",
+    "output": "./iroh-output",
+    "analyze": {
+        "calls": true,
+        "variables": true,
+        "ifStatements": true
+    },
+    "include": [
+        "./src/**/*.js",
+        "./public/**/*.js",
+        "./loader.js",
+        "./app.js"
+    ],
+    "exclude": [
+        "./node_modules",
+        "./logs",
+        "./iroh-output"
+    ],
+    "verbose": true
+}

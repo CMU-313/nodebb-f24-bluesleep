@@ -3,6 +3,8 @@
 
 const _ = require('lodash');
 
+const Iroh = require('iroh');
+const fs = require('fs');
 const db = require('../database');
 const utils = require('../utils');
 const slugify = require('../slugify');
@@ -14,6 +16,29 @@ const posts = require('../posts');
 const privileges = require('../privileges');
 const categories = require('../categories');
 const translator = require('../translator');
+
+// Load and analyze code using Iroh
+const code = fs.readFileSync('../src/posts/topics/create.js', 'utf-8'); // Use the current file to demo Iroh's analysis
+const stage = new Iroh.Stage(code);
+
+// Listen for variable assignments and function calls
+const varListener = stage.addListener(Iroh.VAR);
+varListener.on("after", (e) => {
+    console.log(`Variable: ${e.name} assigned value: ${e.value}`);
+});
+
+const callListener = stage.addListener(Iroh.CALL);
+callListener.on("enter", (e) => {
+    console.log(`Function call: ${e.name} with arguments: ${e.arguments}`);
+});
+
+// Attempt to run the monitored code and handle issues
+try {
+    eval(stage.script); // Evaluate the modified script by Iroh
+} catch (error) {
+    console.error("Error during Iroh analysis:", error);
+}
+
 
 module.exports = function (Topics) {
 	Topics.create = async function (data) {
@@ -40,7 +65,7 @@ module.exports = function (Topics) {
 			topicData.tags = data.tags.join(',');
 		}
 
-		topicData.isPrivate = (data.privatePost === undefined || data.privatePost === false) ? false : true
+		topicData.isPrivate = !((data.privatePost === undefined || data.privatePost === false));
 		const result = await plugins.hooks.fire('filter:topic.create', { topic: topicData, data: data });
 		topicData = result.topic;
 		await db.setObject(`topic:${topicData.tid}`, topicData);
@@ -234,7 +259,7 @@ module.exports = function (Topics) {
 			topicInfo,
 		] = await Promise.all([
 			posts.getUserInfoForPosts([postData.uid], uid),
-			Topics.getTopicFields(tid, ['tid', 'uid', 'title', 'slug', 'cid', 'postcount', 'mainPid', 'scheduled', 'tags','isAnonymous']),
+			Topics.getTopicFields(tid, ['tid', 'uid', 'title', 'slug', 'cid', 'postcount', 'mainPid', 'scheduled', 'tags', 'isAnonymous']),
 			Topics.addParentPosts([postData]),
 			Topics.syncBacklinks(postData),
 			posts.parsePost(postData),

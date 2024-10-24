@@ -1,4 +1,7 @@
 'use strict';
+console.log("Starting Iroh Analysis...");
+
+const Iroh = require('iroh');
 
 const nconf = require('nconf');
 const fs = require('fs');
@@ -32,6 +35,24 @@ let numProcs;
 const workers = [];
 const Loader = {};
 const appPath = path.join(__dirname, 'app.js');
+
+// Example: Test analysis setup
+let code = fs.readFileSync('app.js', 'utf-8');  // Use the main app entry file
+let stage = new Iroh.Stage(code);
+
+// Track function calls
+let callListener = stage.addListener(Iroh.CALL);
+callListener.on("enter", (e) => {
+    console.log(`Function call: ${e.name} with arguments: ${JSON.stringify(e.arguments)}`);
+});
+
+// Track variable assignments
+let varListener = stage.addListener(Iroh.VAR);
+varListener.on("after", (e) => {
+    console.log(`Variable: ${e.name} assigned value: ${e.value}`);
+});
+
+eval(stage.script);
 
 Loader.init = function () {
 	if (silent) {
@@ -98,7 +119,10 @@ Loader.start = function () {
 
 function forkWorker(index, isPrimary) {
 	const ports = getPorts();
-	const args = [];
+	const args = [
+        '-r', './node_modules/iroh/dist/iroh-node.js',
+        appPath
+    ];
 	if (nconf.get('max-memory')) {
 		args.push(`--max-old-space-size=${nconf.get('max-memory')}`);
 	}
@@ -110,10 +134,10 @@ function forkWorker(index, isPrimary) {
 	process.env.isCluster = nconf.get('isCluster') || ports.length > 1;
 	process.env.port = ports[index];
 
-	const worker = fork(appPath, args, {
-		silent: silent,
-		env: process.env,
-	});
+	const worker = fork(appPath, args.slice(2), {
+        silent: silent,
+        env: process.env,
+    });
 
 	worker.index = index;
 	worker.isPrimary = isPrimary;
