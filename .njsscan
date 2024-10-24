@@ -1,0 +1,10 @@
+---
+- nodejs-extensions:
+  - .js
+
+  ignore-paths:
+  - node_modules
+  - tests
+
+  severity-filter:
+  - ERROR
