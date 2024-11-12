@@ -37,7 +37,7 @@ jobs:
       # Add the step to install Node dependencies
       - name: Install Node dependencies
         run: |
-          cd /home/runner/work/nodebb-f24-bluesleep/nodebb-f24-bluesleep
+          cd /home/runner/work/nodebb-f24-bluesleep/nodebb-f24-bluesleep/install
           npm install
 
       - run: cp install/package.json package.json
