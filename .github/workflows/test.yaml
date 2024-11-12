@@ -97,7 +97,7 @@ jobs:
 
       - name: Add llm_queries to Python path
         run: |
-          echo "export PYTHONPATH=$(pwd):$PYTHONPATH" >> $GITHUB_ENV  # Add root directory to PYTHONPATH
+          echo "export PYTHONPATH=$(pwd):$PYTHONPATH" >> $GITHUB_ENV  # Add the root directory to PYTHONPATH
 
       - name: Install Python dependencies
         run: |
