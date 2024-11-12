@@ -4,7 +4,7 @@ on:
   pull_request:
     branches:
       - f24
-  workflow_call: # Usually called from deploy
+  workflow_call:  # Usually called from deploy
 
 defaults:
   run:
@@ -23,29 +23,34 @@ jobs:
     services:
       redis:
         image: 'redis:7.2.4'
-        # Set health checks to wait until redis has started
         options: >-
           --health-cmd "redis-cli ping"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
         ports:
-          # Maps port 6379 on service container to the host
           - 6379:6379
 
     steps:
       - uses: actions/checkout@v4
 
-      # Step to install dependencies
-      - name: Install dependencies
+      # Add the step to install Node dependencies
+      - name: Install Node dependencies
         run: |
-          # Install Node dependencies
-          npm install --save-dev flow-bin
+          cd /home/runner/work/nodebb-f24-bluesleep/nodebb-f24-bluesleep
           npm install
 
-          # Install Python dependencies from requirements.txt
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt  # Install dependencies listed in requirements.txt
+      - run: cp install/package.json package.json
+
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: NPM Install
+        uses: bahmutov/npm-install@v1
+        with:
+          useLockFile: false
 
       - name: Setup for Redis
         env:
@@ -57,7 +62,6 @@ jobs:
               "admin:email": "test@example.org",
               "admin:password": "hAN3Eg8W",
               "admin:password:confirm": "hAN3Eg8W",
-
               "database": "redis",
               "redis:host": "127.0.0.1",
               "redis:port": 6379,
