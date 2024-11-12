@@ -1,0 +1,23 @@
+name: Dummy Workflow
+
+on:
+  push:
+    branches:
+      - main  # Trigger action only on pushes to the 'main' branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Run the job on the latest Ubuntu runner
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2  # Checkout the code
+
+    - name: Do Nothing Step 1
+      run: echo "This step does nothing."
+
+    - name: Do Nothing Step 2
+      run: echo "Still doing nothing."
+
+    - name: Do Nothing Step 3
+      run: echo "Workflow complete, nothing was done."
