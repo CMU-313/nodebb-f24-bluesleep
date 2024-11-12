@@ -11,8 +11,8 @@ Original file is located at
 ## Install Python Dependencies and Authenticate Azure OpenAI
 """
 
-!pip install --quiet openai
-!pip install langdetect
+#!pip install --quiet openai
+#!pip install langdetect
 
 """Follow the instructions provided to you in [this document](https://docs.google.com/document/d/1cTvANh2R6WChDXFz3HDXepcIeciUasAZhB9jScGRdJ4/edit#heading=h.i3lwxtsjubg) to get your API key and Azure endpoint."""
 
