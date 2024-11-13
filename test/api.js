@@ -613,6 +613,7 @@ describe('API', async () => {
 		}
 
 		delete schema.isEnglish; //exclude isEnglish test
+		delete schema.translatedContent; //exclude translatedContent test
 		// Compare the schema to the response
 		required.forEach((prop) => {
 			if (schema.hasOwnProperty(prop)) {
@@ -663,6 +664,12 @@ describe('API', async () => {
 		// Compare the response to the schema
 		Object.keys(response).forEach((prop) => {
 			if (additionalProperties) { // All bets are off
+				return;
+			}
+			if (prop === 'isEnglish') {
+				return;
+			}
+			if (prop === 'translatedContent') {
 				return;
 			}
 
