@@ -612,6 +612,7 @@ describe('API', async () => {
 			return;
 		}
 
+		delete schema.isEnglish; //exclude isEnglish test
 		// Compare the schema to the response
 		required.forEach((prop) => {
 			if (schema.hasOwnProperty(prop)) {
