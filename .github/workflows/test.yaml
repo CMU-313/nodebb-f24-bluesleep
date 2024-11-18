@@ -94,3 +94,18 @@ jobs:
 
       - name: Test coverage
         uses: coverallsapp/github-action@v2
+
+      # New Steps for Python Tests
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'  # Specify the Python version you need
+
+      - name: Install Python dependencies directly
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest  # Install pytest directly instead of using requirements.txt
+
+      - name: Run Python tests
+        run: |
+          pytest  # This will run all your Python-based tests
