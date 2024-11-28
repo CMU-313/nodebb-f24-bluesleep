@@ -1,0 +1,14 @@
+{
+    "admin": {
+      "username": "admin",
+      "password": "Woaimumu5",
+      "password:confirm": "Woaimumu5",
+      "email": "keqingc@andrew.cmu.edu"
+    },
+    "url": "http://localhost:4567",
+    "database": "redis",
+    "redis": {
+      "host": "127.0.0.1",
+      "port": "6379"
+    }
+  }  

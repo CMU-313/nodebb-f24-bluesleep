@@ -1,0 +1,7 @@
+{
+    "analyze": {
+      "entry": "app.js",
+      "output": "./iroh-report",
+      "verbose": true
+    }
+  }
